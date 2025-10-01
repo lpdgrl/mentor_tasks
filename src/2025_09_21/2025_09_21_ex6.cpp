@@ -62,7 +62,7 @@ int main() {
      // Create balanced tree
     FillBinaryTree(root.get());
     int n = 1;
-    std::cout << "n = 1, res = " << FindNhtHighest(root.get(), n) << std::endl;
+    // std::cout << "n = 1, res = " << FindNhtHighest(root.get(), n) << std::endl;
     n = 3;
     std::cout << "n = 3, res = " << FindNhtHighest(root.get(), n) << std::endl;
     n = 8;
