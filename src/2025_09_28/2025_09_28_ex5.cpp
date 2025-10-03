@@ -5,6 +5,10 @@
 
 template <typename InputIter>
 void HistoRecur(std::map<int, int>& hist, InputIter begin, InputIter end) {
+    if (begin >= end) {
+        return;
+    }
+    
     if (*begin == *(end - 1)) {
         hist[*begin] += (end) - begin;
         return;
@@ -33,18 +37,6 @@ std::map<int, int> Histogram(std::vector<int>& v) {
     }
 
     HistoRecur(hist, v.cbegin(), v.cend());
-    // int first = 0; int last = sz_v / 2;
-    // while (first <= last) {
-    //     if (v[first] != v[last]) {
-    //         last = (last + first) / 2;
-    //     }
-    //     else if (v[first] == v[last]) {
-    //         size_t len = last - first + 1;
-    //         hist[v[first]] += len;
-    //         first += len;
-    //         last = sz_v;
-    //     }
-    // }
 
     return hist;
 }
