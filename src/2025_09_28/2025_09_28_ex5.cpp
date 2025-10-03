@@ -3,7 +3,23 @@
 #include <cassert>
 #include <map>
 
-std::map<int, int> Histogram(const std::vector<int>& v) {
+template <typename InputIter>
+void HistoRecur(std::map<int, int>& hist, InputIter begin, InputIter end) {
+    if (*begin == *(end - 1)) {
+        hist[*begin] += (end) - begin;
+        return;
+    }
+
+    auto len = end - begin;
+    auto med = len / 2;
+    auto mid = begin +med;
+
+    HistoRecur(hist, begin, mid);
+
+    HistoRecur(hist, mid, end);
+}
+
+std::map<int, int> Histogram(std::vector<int>& v) {
     std::map<int, int> hist;
     size_t sz_v = v.size() - 1;
 
@@ -16,18 +32,19 @@ std::map<int, int> Histogram(const std::vector<int>& v) {
         return hist;
     }
 
-    int first = 0; int last = sz_v / 2;
-    while (first <= last) {
-        if (v[first] != v[last]) {
-            last = (last + first) / 2;
-        }
-        else if (v[first] == v[last]) {
-            size_t len = last - first + 1;
-            hist[v[first]] += len;
-            first += len;
-            last = sz_v;
-        }
-    }
+    HistoRecur(hist, v.cbegin(), v.cend());
+    // int first = 0; int last = sz_v / 2;
+    // while (first <= last) {
+    //     if (v[first] != v[last]) {
+    //         last = (last + first) / 2;
+    //     }
+    //     else if (v[first] == v[last]) {
+    //         size_t len = last - first + 1;
+    //         hist[v[first]] += len;
+    //         first += len;
+    //         last = sz_v;
+    //     }
+    // }
 
     return hist;
 }
@@ -50,6 +67,9 @@ int main() {
 
     std::vector<int> v5{1};
     assert((std::map<int, int>{{1, 1}}) == Histogram(v5));
+
+    std::vector<int> v6{1, 1, 1, 1, 2, 2, 2};
+    assert((std::map<int, int>{{1, 4}, {2, 3}}) == Histogram(v6));
 
     return EXIT_SUCCESS;
 }
