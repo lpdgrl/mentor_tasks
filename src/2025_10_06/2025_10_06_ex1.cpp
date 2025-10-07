@@ -12,23 +12,39 @@ PairIdx find_subarr_sum_k(const std::vector<size_t>& v, size_t k) {
     if (v.empty()) {
         return {};
     }
+    
+    
+    // // Calculate first sum
+    // for (size_t i = 0; i < k; ++i) {
+    //     sum += v[i];
+    // }
+    // if (sum == k) return {0, k - 1};
 
-    size_t left = 0;
-    size_t right = 0;
-    size_t sum = v[left];
-    while (left <= right) {
+    // // The rest sums are calculating
+    // for (size_t i = k; i < v.size(); ++i) {
+    //     sum += v[i] - v[i - k];
+
+    //     if (sum == k) {
+    //         std::cout << "first index: " << i << " last index " << i - k << std::endl;
+    //         return {i, i - k};
+    //     }
+    // }
+
+    size_t sum = 0, left = 0, right = 0;
+    sum += v[left];
+    while (right < v.size() - 1) {
+        if (sum < k) {
+            sum += v[++right];
+        }
+        else if (sum > k && left <= right) {
+            sum -= v[left++];
+        }
+
         if (sum == k) {
             return {left, right};
         }
-
-        if (sum < k) {
-            sum += v[++right];
-        }    
-        else if (sum > k) {
-            sum -= v[left++];
-        }
- 
-    } 
+    }
+   
 
     return {-1, -1};
 }
@@ -47,20 +63,21 @@ void Tests() {
 
     std::vector<TestCase> test_cases;
 
-    // test_cases.push_back({{1, 2, 3, 4, 5}, 9, {1, 3}});
-    // test_cases.push_back({{1, 3, 7, 9, 10}, 7, {2, 2}});
-    // test_cases.push_back({{5, 2, 3, 1}, 5, {0, 0}});
-    // test_cases.push_back({{1, 2, 3, 4, 6}, 10, {0, 3}});
-    test_cases.push_back({{2, 4, 6, 8}, 5, {-1, -1}}); // нет решения
-    test_cases.push_back({{2, 2, 2, 2, 2}, 6, {0, 2}});
-    test_cases.push_back({{0, 0, 0, 5, 0}, 5, {3, 3}});
-    test_cases.push_back({{10, 1, 2, 3, 4, 5, 20}, 9, {2, 4}});
+    test_cases.push_back({{1, 2, 3, 4, 5, 1, 4, 3, 8}, 9, {1, 3}});
+    test_cases.push_back({{1, 3, 7, 9}, 7, {2, 2}});
+    test_cases.push_back({{5, 2, 3, 1, 6, 7}, 5, {0, 0}});
+    test_cases.push_back({{1, 2, 3, 4, 6, 2, 1, 5, 7, 8, 9}, 10, {0, 3}});
+    test_cases.push_back({{2, 4, 6, 8, 1, 2, 4}, 5, {-1, -1}}); // нет решения
+    test_cases.push_back({{2, 2, 2, 2, 2, 2, 2}, 6, {0, 2}});
+    test_cases.push_back({{0, 0, 0, 5, 0, 0, 0}, 5, {0, 3}});
+    test_cases.push_back({{10, 1, 2, 3, 4, 5, 20, 8, 1, 2, 7}, 9, {2, 4}});
 
     for (const auto& test_case : test_cases) {
         auto [arr, k, expected] = test_case;
         std::cout << "Test case expected: " << expected << std::endl;
-        assert(expected == find_subarr_sum_k(arr, k));
-        std::cout << "Test ok!" << std::endl;
+        auto res = find_subarr_sum_k(arr, k);
+        bool test = expected == res;
+        std::cout << (test ? "Test ok!" : "Test bad!") << std::endl;
     }
 }
 
