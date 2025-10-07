@@ -10,9 +10,8 @@ using PairIdx = std::pair<int, int>;
 
 PairIdx find_subarr_sum_k(const std::vector<size_t>& v, size_t k) {
     if (v.empty()) {
-        return {};
+        return {-1, -1};
     }
-    
     
     // // Calculate first sum
     // for (size_t i = 0; i < k; ++i) {
@@ -45,7 +44,6 @@ PairIdx find_subarr_sum_k(const std::vector<size_t>& v, size_t k) {
         }
     }
    
-
     return {-1, -1};
 }
 
@@ -82,6 +80,5 @@ void Tests() {
 }
 
 int main() {
-
     Tests();
 }
