@@ -25,14 +25,14 @@ int find_max_length_substr(const std::string& str) {
 }
 
 void tests() {
-    std::string str1{"acbaadeqwr"};
-    std::string str2{"aaaaaabdacd"};
-    std::string str3{"abc"};
-    std::string str4{"a"};
-    std::string str5{"aa"};
-    std::string str6{"ad"};
-    std::string str7{"abca"};
-    std::string str8{"pwwkew"};
+    std::string str1{"acbaadeqwr"};     // "adeqwr"
+    std::string str2{"aaaaaabdacd"};    // "bdac"
+    std::string str3{"abc"};            // "abc"
+    std::string str4{"a"};              // "a"
+    std::string str5{"aa"};             // "a"
+    std::string str6{"ad"};             // "ad"
+    std::string str7{"abca"};           // "bca"
+    std::string str8{"pwwkew"};         // "wke"
     
     assert(6 == find_max_length_substr(str1));
     assert(4 == find_max_length_substr(str2));
