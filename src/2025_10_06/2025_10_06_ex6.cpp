@@ -19,7 +19,7 @@ int count_palindrome_substrings(const std::string& str) {
     size_t center = 0;
 
     auto expand = [&] (int left, int right) {
-        while (left >= 0 && right < str.size() && str[left] == str[right]) {
+        while (left >= 0 && right < str.size() && std::tolower(str[left]) == std::tolower(str[right])) {
             ++count_palindrome;
             --left;
             ++right;
