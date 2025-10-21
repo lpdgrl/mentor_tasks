@@ -20,12 +20,10 @@ bool is_palindrome(const std::string& str) {
                        | std::ranges::to<std::string>();
 
     int center = str_.size() / 2;
-    bool odd = (str_.size() % 2) != 0 ? true : false;
-    int left = odd ? center : center - 1;
-    int right = center;
+    int left = (str_.size() % 2) != 0 ? center : center - 1;
 
-    while (left >= 0 && right < str.size()) {
-        if (std::tolower(str_[left--]) != std::tolower(str_[right++])) {
+    while (left >= 0 && center < str.size()) {
+        if (std::tolower(str_[left--]) != std::tolower(str_[center++])) {
             return false;
         }
     }

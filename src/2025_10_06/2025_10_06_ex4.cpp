@@ -12,13 +12,10 @@ int find_max_length_substr(const std::string& str) {
 
     size_t left = 0, right = 0, max = 0;
     while (right < str.size()) {
-        size_t prev_position = right;
-        auto [_, state_insert] = counter.insert(str[right++]);
-
-        if (!state_insert) {
+        while (!counter.insert(str[right]).second) {
             counter.erase(str[left++]);
-            right = prev_position;
         }
+        ++right;
         max = std::max(max, counter.size());
     }
     return max;
