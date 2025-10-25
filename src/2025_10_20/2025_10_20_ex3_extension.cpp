@@ -22,7 +22,6 @@ https://leetcode.com/problems/design-hit-counter/description/
 struct UserHit {
     int timestamp = 0;
     size_t user_id = 0;
-    int count_hits = 0;
 };
 
 struct TotalHits {
@@ -35,44 +34,34 @@ public:
 
     void hit(size_t user_id, int timestamp) {
         cleanup(timestamp);
-
-        auto it_find = user_hit_counts_.find(user_id);
-    
-        if (it_find != user_hit_counts_.end() && !queue_.empty()) {
-            auto& last = queue_.back();
-            if (last.user_id == user_id && last.timestamp == timestamp) {
-                // увеличиваем count_hits последнего блока
-                ++last.count_hits;
-                ++it_find->second.total_hits;
-                return;
-            }
-        }
     
         // добавляем новый блок
-        queue_.push_back({timestamp, user_id, 1});
-    
-        if (it_find != user_hit_counts_.end()) {
-            it_find->second.total_hits += 1;
-        } else {
-            user_hit_counts_[user_id] = {1};
+        queue_.push_back({timestamp, user_id});
+        user_hit_counts_[user_id]++;
+
+        if (user_hit_counts_[user_id] >= kCountLastUserRequests) {
+            number_heavy_users_[user_id] = 1;
         }
     }
 
     int getHits(int timestamp) {
         cleanup(timestamp);
 
-        return std::ranges::count_if(user_hit_counts_, [](auto const& pair) { return pair.second.total_hits >= 5000; });
+        return number_heavy_users_.size();
     }
 
 private:
 void cleanup(int timestamp) {
-    while (!queue_.empty() && (queue_.front().timestamp) <= timestamp - INTERVAL_LAST_MESSAGES_) {
+    while (!queue_.empty() && (queue_.front().timestamp) <= timestamp - kIntervalLastMessages) {
         auto& front_block = queue_.front();
         size_t dq_user = front_block.user_id;
 
         if (auto it_user = user_hit_counts_.find(dq_user); it_user != user_hit_counts_.end()) {
-            it_user->second.total_hits -= front_block.count_hits;
-            if (it_user->second.total_hits <= 0) {
+            it_user->second -= front_block.timestamp;
+            if (it_user->second < 5000) {
+                number_heavy_users_.erase(dq_user);
+            }
+            if (it_user->second <= 0) {
                 user_hit_counts_.erase(it_user);
             }
         }
@@ -82,11 +71,12 @@ void cleanup(int timestamp) {
 }
 
 private:
-    std::unordered_map<size_t, TotalHits> user_hit_counts_;
+    std::unordered_map<size_t, int> user_hit_counts_;
     std::deque<UserHit> queue_;
-    const int INTERVAL_LAST_MESSAGES_ = 300;
-    const int COUNT_LAST_USER_REQUESTS = 5000;
-    const int ONE_REQUEST = 1;
+    std::unordered_map<size_t, int> number_heavy_users_;
+    const int kIntervalLastMessages = 300;
+    const int kCountLastUserRequests = 5000;
+    const int kOneRequest = 1;
 };
 
 void runTests() {
@@ -133,7 +123,7 @@ void runTests() {
     {
         HitCounter hitCounter;
         // user 1: все хиты в окне
-        for (int i = 0; i < 5000; ++i) hitCounter.hit(1, 500);
+        for (int i = 0; i < 5000; ++i) hitCounter.hit(1, 1);
 
         // user 2: часть старых, часть свежих
         for (int i = 0; i < 2500; ++i) hitCounter.hit(2, 100);
